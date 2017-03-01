@@ -1,31 +1,27 @@
-# augment via OPTFLAGS
-CFLAGS=-g -O2 -Wall -Wextra -Isrc -rdynamic -DNDEBUG $(OPTFLAGS)
-
-# augment linking options via OPTLIBS
-LIBS=-ldl $(OPTLIBS)
-
-# optional, only applies when user didn't give PREFIX setting
+CFLAGS = -g -O2 -Wall -Wextra -Isrc -rdynamic -DNDEBUG $(OPT-FLAGS)
+LIBS = -ldl $(OPTLIBS)
 PREFIX?=/usr/local
 
-# all .c files in source and below
 SOURCES=$(wildcard src/**/*.c src/*.c)
-OBJECTS=$(SOURCES:.c=.o)
+OBJECTS=$(patsubst %.c, %.o, $(SOURCES))
 
-TEST_SRC=$(wildcard tests/*.c)
-TESTS=$(TEST_SRC:.c=)
+TEST_SRC=$(wildcard tests/*_tests.c)
+TESTS=$(patsubst %.c, %, $(TEST_SRC))
 
 TARGET=build/liblcthw.a
-SO_TARGET=$(TARGET:.a=.so)
+SO_TARGET=$(patsubst %.a,%.so,$(TARGET))
 
-all: $(TARGET) $(SO_TARGET) tests
+# The target build
+all: clean\
+	$(TARGET) $(SO_TARGET) tests
 
-# changing options for just the developer build (-Wextra is useful for finding bugs)
+
 dev: CFLAGS=-g -Wall -Isrc -Wall -Wextra $(OPTFLAGS)
+
 dev: all
 
-# adding -fPIC option for just the target build
 $(TARGET): CFLAGS += -fPIC
-# makes the target, first the .a file (ar) and then the library via ranlib
+
 $(TARGET): build $(OBJECTS)
 	ar rcs $@ $(OBJECTS)
 	ranlib $@
@@ -37,8 +33,11 @@ build:
 	@mkdir -p build
 	@mkdir -p bin
 
-# link the test programs with the TARGET library, i.e. build/libYOUR_LIBRARY
+# The Unit tests
+.PHONY: tests
+
 tests: CFLAGS += $(TARGET)
+
 tests: $(TESTS)
 	sh ./tests/runtests.sh
 
@@ -48,15 +47,13 @@ clean:
 	find . -name "*.gc*" -exec rm {} \;
 	rm -rf `find . -name "*.dSYM" -print`
 
+# The Install
 install: all
-	# PREFIX is usually: /usr/local/lib
-	# unix install command (create missing dir automatically) -- see: man install
-	install -d $(DESTDIR)/$(PREFIX)/lib/
-	install $(TARGET) $(DESTDIR)/$(PREFIX)/lib/
+	install -d $(DESTDIR)/$(PREFIX)/lib
+	install $(TARGET) $(DESTDIR)/$(PREFIX)/lib
 
-BADFUNCS='[^_.>a-zA-Z0-9](str(n?cpy|n?cat|xfrm|n?dup|str|pbrk|tok|_)|stpn?cpy|a?sn?printf|byte_)'
+# The checker
 check:
-	@echo Files with potentially dangerous functions.
-	@egrep $(BADFUNCS) $(SOURCES) || true
+	@echo Files with potential dangerous functions.
+	@egrep '[^_.>a-zA-Z0-9](str(n?cpy|n?cat|xfrm|n?dup|str|pbrk|tok|_)|stpn?cpy|a?sn?printf|byte_)' $(SOURCES) || true
 
-.PHONY: all dev build tests
