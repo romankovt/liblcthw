@@ -44,6 +44,7 @@ clean:
 	rm -rf build $(OBJECTS) $(TESTS)
 	rm -f tests/tests.log
 	find . -name "*.gc*" -exec rm {} \;
+	find . -name "*.o*" -exec rm {} \;
 	rm -rf `find . -name "*.dSYM" -print`
 
 # The Install
