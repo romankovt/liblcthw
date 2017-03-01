@@ -1,1 +1,1 @@
-Exercises for the Learn c the hardway book
+Exercises for the "Learn C the hardway" book
