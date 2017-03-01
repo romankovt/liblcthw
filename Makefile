@@ -15,7 +15,6 @@ SO_TARGET=$(patsubst %.a,%.so,$(TARGET))
 all: clean\
 	$(TARGET) $(SO_TARGET) tests
 
-
 dev: CFLAGS=-g -Wall -Isrc -Wall -Wextra $(OPTFLAGS)
 
 dev: all
