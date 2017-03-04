@@ -3,4 +3,5 @@
 *.dSYM
 *.gc*"
 *.o*"
+*.log"
 build/*
