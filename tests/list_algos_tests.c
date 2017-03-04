@@ -3,8 +3,9 @@
 #include "../src/lcthw/list.h"
 #include <assert.h>
 #include <string.h>
+#include <sys/time.h>
 
-char *values[] = {"XXXX", "1234", "abcd", "xjvef", "NDSS"};
+char *values[] = {"XXXX", "1234", "abcd", "xjvef", "NDSS", "WHOOHO", "Roman", "Susan", "Someone you don't know", "crispy", "litlte pony", "123", "abc", "___"};
 
 #define NUM_VALUES 5
 

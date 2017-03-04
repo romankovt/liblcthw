@@ -90,7 +90,7 @@ void *List_shift(List * list)
   return node != NULL ? List_remove(list, node) : NULL;
 }
 
-void *List_remove(List * list, ListNode * node)
+void *List_remove(List *list, ListNode *node)
 {
   void *result = NULL;
 
@@ -154,7 +154,7 @@ List *List_merge(List *left, List *right, List_compare cmp) {
   List *sorted = List_create();
 
   while(left->count > 0 && right->count > 0) {
-    if (cmp((char *)left->first->value, (char *)right->first->value) < 0) {
+    if (cmp((char *)left->first->value, (char *)right->first->value) <= 0) {
       List_push(sorted, left->first->value);
       List_shift(left);
     } else {
@@ -174,6 +174,10 @@ List *List_merge(List *left, List *right, List_compare cmp) {
     List_shift(right);
   }
 
+  // Clean-up
+  List_destroy(left);
+  List_destroy(right);
+
   return sorted;
 }
 
@@ -186,7 +190,6 @@ int List_buble_sort(List *list, List_compare cmp) {
   int is_sorted = 0;
   while(is_sorted == 0) {
     is_sorted = 1;
-
 
     LIST_FOREACH(list, first, next, cur) {
       // skip the last one
@@ -218,4 +221,101 @@ void List_swap_nodes(ListNode *node1, ListNode *node2) {
   void *temp = node1->value;
   node1->value = node2->value;
   node2->value = temp;
+}
+
+int List_is_empty(List *list) {
+  return list->count == 0 ? 1 : 0;
+}
+
+void* List_value_at(List *list, int position) {
+  if (list->count <= position) {
+    return NULL;
+  }
+
+  int i = 0;
+  void* pointer_to_value = NULL;
+  LIST_FOREACH(list, first, next, cur) {
+    if (i == position) {
+      pointer_to_value = cur->value;
+    }
+  }
+
+  return pointer_to_value;
+}
+
+List *List_insert_value_at(List *list, int position, void *value) {
+  int i = 0;
+
+  LIST_FOREACH(list, first, next, cur) {
+    if (i == position) {
+      cur->value = value;
+    }
+  }
+
+  return list;
+}
+
+List *List_erase_at(List *list, int position) {
+  if (position > list->count || list->count == 0) {
+    return list;
+  }
+
+  int i = 0;
+
+  LIST_FOREACH(list, first, next, cur) {
+    if (i == position) {
+      list = List_remove(list, cur);
+    }
+
+    i++;
+  }
+
+  return list;
+}
+
+void *List_value_n_from_end(List *list, int position) {
+  if (list->count == 0) {
+    return NULL;
+  }
+
+  ListNode *node = list->last;
+  void *found_value = NULL;
+
+  for(int i = 0; node != NULL; node = node->prev, i++) {
+    if(position == i) {
+      found_value = node->value;
+    }
+  }
+
+  return found_value;
+}
+
+List *List_reverse(List *list) {
+  if (list->count == 0) {
+    return list;
+  }
+
+  ListNode *temp_node = NULL;
+  ListNode *current = list->first;
+
+  while(current != NULL) {
+    temp_node = current->prev;
+    current->prev = current->next;
+    current->next = temp_node;
+    current = current->prev;
+  }
+
+  temp_node = list->first;
+  list->first = list->last;
+  list->last = temp_node;
+
+  return list;
+}
+
+void List_remove_value(List *list, void *value) {
+  LIST_FOREACH(list, first, next, cur) {
+    if(cur->value == value) {
+      List_remove(list, cur);
+    }
+  }
 }

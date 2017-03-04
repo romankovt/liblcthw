@@ -33,11 +33,17 @@ void List_unshift(List *list, void *value);
 void *List_shift(List *list);
 
 void *List_remove(List *list, ListNode *node);
-
 void List_swap_nodes(ListNode *node1, ListNode *node2);
+
+int List_is_empty(List *list);
+void *List_value_at(List *list, int position);
+List *List_insert_value_at(List *list, int position, void *value);
+List *List_erase_at(List *list, int position);
+void *List_value_n_from_end(List *list, int position);
+List *List_reverse(List *list);
+void List_remove_value(List *list, void *value);
 
 #define LIST_FOREACH(L, S, M, V) ListNode *_node = NULL;\
 ListNode *V = NULL;\
 for(V = _node = L->S; _node != NULL; V = _node = _node->M)
-
 #endif
