@@ -8,13 +8,12 @@ DArray *DArray_create(size_t element_size, size_t initial_max)
   array->max = initial_max;
   check(array->max > 0, "You must set an initial_max > 0.");
 
-  array->contents = malloc(sizeof(void *));
+  array->contents = calloc(initial_max, sizeof(void *));
   check_mem(array->contents);
 
-
+  array->end = 0;
   array->element_size = element_size;
   array->expand_rate = DEFAULT_EXPAND_RATE;
-  array->end = 0;
 
   return array;
 
@@ -51,11 +50,11 @@ void DArray_clear_destroy(DArray *array) {
   DArray_destroy(array);
 }
 
-static inline int DArray_resize(DArray *array, size_t new_size)
+static inline int DArray_resize(DArray *array, size_t newsize)
 {
-  array->max = new_size;
+  array->max = newsize;
   check(array->max > 0, "The newsize should be > 0");
-  void *contents = realloc(array->contents, array->max * sizeof(void*));
+  void *contents = realloc(array->contents, array->max * sizeof(void *));
   check_mem(contents);
 
   array->contents = contents;
@@ -84,11 +83,10 @@ int DArray_contract(DArray *array)
   return DArray_resize(array, new_size + 1);
 }
 
-int DArray_push(DArray *array, void* value)
+int DArray_push(DArray *array, void *value)
 {
   array->contents[array->end] = value;
   array->end++;
-
   if (DArray_end(array) >= DArray_max(array)) {
     return DArray_expand(array);
   } else {
