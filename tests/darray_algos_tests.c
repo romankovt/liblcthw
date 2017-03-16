@@ -1,9 +1,9 @@
 #include "minunit.h"
 #include "../src/lcthw/darray_algos.h"
 
-int testcmp(char **a, char **b)
+int testcmp(char *a, char *b)
 {
-  return strcmp(*a, *b);
+  return strcmp(a, b);
 }
 
 DArray *create_words()
@@ -35,7 +35,6 @@ int is_sorted(DArray *array)
   return 1;
 }
 
-
 char *run_sort_test(int (*func) (DArray *, DArray_compare), const char *name)
 {
   DArray *words = create_words();
@@ -57,11 +56,6 @@ char *test_qsort()
   return run_sort_test(DArray_qsort, "qsort");
 }
 
-char *test_custom_qsort()
-{
-  return run_sort_test(DArray_custom_qsort, "custom_qsort");
-}
-
 char *test_heapsort()
 {
   return run_sort_test(DArray_heapsort, "heapsort");
@@ -72,20 +66,15 @@ char *test_mergesort()
   return run_sort_test(DArray_mergesort, "mergesort");
 }
 
-char *test_custom_mergesort()
-{
-  return run_sort_test(DArray_custom_mergesort, "custom_mergesort");
-}
-
 char *all_tests()
 {
   mu_suite_start();
 
+  // mu_run_test(test_qsort);
   mu_run_test(test_qsort);
-  mu_run_test(test_custom_qsort);
-  mu_run_test(test_heapsort);
+  // mu_run_test(test_heapsort);
+  // mu_run_test(test_mergesort);
   mu_run_test(test_mergesort);
-  mu_run_test(test_custom_mergesort);
 
   return NULL;
 }
