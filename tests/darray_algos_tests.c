@@ -1,6 +1,13 @@
 #include "minunit.h"
 #include "../src/lcthw/darray_algos.h"
 
+void print_array2(DArray *array)
+{
+  for(int i = 0; i < array->end; i++) {
+    printf("%d. %s\n", i+1, DArray_get(array, i));
+  }
+}
+
 int testcmp(char *a, char *b)
 {
   return strcmp(a, b);
@@ -24,7 +31,6 @@ DArray *create_words()
 int is_sorted(DArray *array)
 {
   int i = 0;
-
   for (i = 0; i < DArray_count(array) - 1; i++) {
     if (strcmp(DArray_get(array, i), DArray_get(array, i + 1)) > 0) {
       return 0;
@@ -69,11 +75,9 @@ char *all_tests()
 {
   mu_suite_start();
 
-  // mu_run_test(test_qsort);
   mu_run_test(test_qsort);
-  // mu_run_test(test_heapsort);
-  // mu_run_test(test_mergesort);
   mu_run_test(test_mergesort);
+    mu_run_test(test_heapsort);
 
   return NULL;
 }
