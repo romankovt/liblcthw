@@ -14,6 +14,17 @@ int DArray_qsort(DArray *array, DArray_compare cmp)
   return 0;
 }
 
+int DArray_heapsort(DArray *array, DArray_compare cmp) {
+  DArray_heapify(array, array->end, cmp);
+
+  for(int i = array->end - 1; i > 0; i--) {
+    Heap_delete_max(array, i, cmp);
+  }
+
+  array->contents = array->contents;
+  return 0;
+}
+
 DArray *DArray_mergesort_iterator(DArray *array, DArray_compare cmp)
 {
   if (DArray_count(array) == 1) {
@@ -89,17 +100,6 @@ DArray *DArray_merge(DArray *left, DArray *right, DArray_compare cmp) {
   DArray_free(left);
   DArray_free(right);
   return sorted;
-}
-
-int DArray_heapsort(DArray *array, DArray_compare cmp) {
-  DArray_heapify(array, array->end, cmp);
-
-  for(int i = array->end - 1; i > 0; i--) {
-    Heap_delete_max(array, i, cmp);
-  }
-
-  array->contents = array->contents;
-  return 0;
 }
 
 void *DArray_left_child(DArray *array, int i) {
