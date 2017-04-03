@@ -70,3 +70,4 @@ static inline void *DArray_new(DArray *array)
 #define DArray_free(E) free((E))
 
 #endif
+
